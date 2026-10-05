@@ -25,6 +25,7 @@ export default function App() {
 
   return (
     <div className="site-frame">
+    <Analytics></Analytics>
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
