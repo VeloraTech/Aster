@@ -22,7 +22,7 @@ export default function TechnologyCard({ technology }: TechnologyCardProps) {
       )}
       <a
         className="technology-card-link"
-        href={`/technology/${technology.slug}`}
+        href={`/technologies/${technology.slug}`}
         aria-label={`View the ${technology.name} overview`}
       >
         View overview <span aria-hidden="true">↗</span>

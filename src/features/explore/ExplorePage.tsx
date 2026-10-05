@@ -2,7 +2,7 @@ import { useState } from 'react'
 import ExplorePagination from './components/ExplorePagination'
 import ExploreToolbar from './components/ExploreToolbar'
 import TechnologyCard from './components/TechnologyCard'
-import { technologies } from './data/technologies'
+import { technologies } from '../../data/technologies'
 import type { ExploreFilters } from './types'
 import { filterAndSortTechnologies, paginateItems } from './utils/queryTechnologies'
 

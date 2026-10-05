@@ -2,24 +2,22 @@ import { Analytics } from '@vercel/analytics/react'
 
 import SiteFooter from '../components/SiteFooter'
 import SiteHeader from '../components/SiteHeader'
-import { technologies } from '../features/explore/data/technologies'
+import { findTechnologyBySlug } from '../data/technologies'
 import ExplorePage from '../features/explore/ExplorePage'
-import TechnologyPlaceholderPage from '../features/explore/TechnologyPlaceholderPage'
+import TechnologyDetailPage from '../features/technology/TechnologyDetailPage'
+import TechnologyNotFoundPage from '../features/technology/TechnologyNotFoundPage'
 import HomePage from '../pages/HomePage'
 
 import './app.css'
 
 export default function App() {
   const path = window.location.pathname.replace(/\/+$/, '') || '/'
-  const technologySlug = path.startsWith('/technology/')
-    ? path.slice('/technology/'.length)
-    : null
-  const selectedTechnology = technologySlug
-    ? technologies.find((technology) => technology.slug === technologySlug)
-    : undefined
+  const technologyMatch = path.match(/^\/(?:technologies|technology)\/(.+)$/)
+  const technologySlug = technologyMatch?.[1]
+  const selectedTechnology = technologySlug ? findTechnologyBySlug(technologySlug) : undefined
   const currentPage = path === '/explore'
     ? 'explore'
-    : technologySlug
+    : technologyMatch
       ? 'technology'
       : 'home'
 
@@ -31,8 +29,8 @@ export default function App() {
       </a>
       <SiteHeader currentPage={currentPage} />
       <main id="main-content" tabIndex={-1}>
-        {technologySlug ? (
-          <TechnologyPlaceholderPage technology={selectedTechnology} />
+        {technologyMatch ? (
+          selectedTechnology ? <TechnologyDetailPage technology={selectedTechnology} /> : <TechnologyNotFoundPage />
         ) : path === '/explore' ? (
           <ExplorePage />
         ) : (

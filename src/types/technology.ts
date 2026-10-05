@@ -35,4 +35,15 @@ export type Technology = {
   category: TechnologyCategory
   ecosystem?: string
   logo?: string
+  context?: string
+  useCases?: string[]
+  relatedTechnologies?: string[]
+  alternatives?: string[]
+  resources?: TechnologyResource[]
+}
+
+export type TechnologyResource = {
+  label: string
+  url: string
+  type: 'Official website' | 'Documentation' | 'Source code'
 }
