@@ -1,20 +1,39 @@
 import SiteFooter from '../components/SiteFooter'
 import SiteHeader from '../components/SiteHeader'
-import ExplorePage from '../pages/ExplorePage'
+import ExplorePage from '../features/explore/ExplorePage'
+import TechnologyPlaceholderPage from '../features/explore/TechnologyPlaceholderPage'
+import { technologies } from '../features/explore/data/technologies'
 import HomePage from '../pages/HomePage'
 import './app.css'
 
 export default function App() {
-  const isExplorePage = window.location.pathname.replace(/\/$/, '') === '/explore'
+  const path = window.location.pathname.replace(/\/+$/, '') || '/'
+  const technologySlug = path.startsWith('/technology/')
+    ? path.slice('/technology/'.length)
+    : null
+  const selectedTechnology = technologySlug
+    ? technologies.find((technology) => technology.slug === technologySlug)
+    : undefined
+  const currentPage = path === '/explore'
+    ? 'explore'
+    : technologySlug
+      ? 'technology'
+      : 'home'
 
   return (
     <div className="site-frame">
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
-      <SiteHeader isExplorePage={isExplorePage} />
+      <SiteHeader currentPage={currentPage} />
       <main id="main-content" tabIndex={-1}>
-        {isExplorePage ? <ExplorePage /> : <HomePage />}
+        {technologySlug ? (
+          <TechnologyPlaceholderPage technology={selectedTechnology} />
+        ) : path === '/explore' ? (
+          <ExplorePage />
+        ) : (
+          <HomePage />
+        )}
       </main>
       <SiteFooter />
     </div>

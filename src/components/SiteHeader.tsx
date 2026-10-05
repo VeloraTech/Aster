@@ -1,8 +1,8 @@
 type SiteHeaderProps = {
-  isExplorePage: boolean
+  currentPage: 'home' | 'explore' | 'technology'
 }
 
-export default function SiteHeader({ isExplorePage }: SiteHeaderProps) {
+export default function SiteHeader({ currentPage }: SiteHeaderProps) {
   return (
     <header className="site-header">
       <div className="header-inner">
@@ -11,16 +11,16 @@ export default function SiteHeader({ isExplorePage }: SiteHeaderProps) {
         </a>
 
         <nav className="primary-nav" aria-label="Primary navigation">
-          {isExplorePage ? (
-            <a className="nav-link" href="/">
-              Introduction
-            </a>
-          ) : (
+          {currentPage === 'home' ? (
             <a className="nav-link" href="#approach">
               The approach
             </a>
+          ) : (
+            <a className="nav-link" href="/">
+              Introduction
+            </a>
           )}
-          {isExplorePage ? (
+          {currentPage === 'explore' ? (
             <span className="nav-action is-current" aria-current="page">
               Explore
             </span>

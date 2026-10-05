@@ -4,7 +4,7 @@ Aster is a technology intelligence and discovery platform that helps developers 
 
 ## Project status
 
-Phase 1: the responsive application shell and introduction experience are in place. Explore currently shows a development notice. Technology data, search, comparison, and API functionality are not implemented yet.
+Phase 2: the responsive Explore experience is implemented with a curated local seed collection. Technology overview links lead to a clear placeholder because detail pages are not implemented yet. A REST API and backend are not part of this phase.
 
 ## Technology
 
@@ -23,6 +23,12 @@ npm run dev
 ```
 
 Vite prints the local development URL in the terminal.
+
+## Explore
+
+The Explore page supports case-insensitive search across technology names, descriptions, types, categories, and ecosystems. Category filters, name sorting, and client-side pagination work together. Search, category, sort, and page state are local to the page and are not stored in the URL. Changing a search, category, or sort resets the results to the first page.
+
+The seed catalogue is maintained in `src/features/explore/data/technologies.ts`. It is local application data, not a live API response.
 
 ## Available scripts
 
