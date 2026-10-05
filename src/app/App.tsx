@@ -1,9 +1,12 @@
+import { Analytics } from "@vercel/analytics/next"
+
 import SiteFooter from '../components/SiteFooter'
 import SiteHeader from '../components/SiteHeader'
+import { technologies } from '../features/explore/data/technologies'
 import ExplorePage from '../features/explore/ExplorePage'
 import TechnologyPlaceholderPage from '../features/explore/TechnologyPlaceholderPage'
-import { technologies } from '../features/explore/data/technologies'
 import HomePage from '../pages/HomePage'
+
 import './app.css'
 
 export default function App() {
