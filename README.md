@@ -4,7 +4,7 @@ Aster is a technology intelligence and discovery platform that helps developers 
 
 ## Project status
 
-Phase 3: Explore uses a curated local seed collection, and each technology has a detail page with context, use cases, relationships, alternatives, and selected documentation links. Data remains local; a REST API and backend are not part of this phase.
+Phase 4: Explore, technology profiles, and a structured Compare experience use one curated local seed collection. Comparison is descriptive and shareable by URL; it does not rank technologies. Data remains local, with no REST API or backend.
 
 ## Technology
 
@@ -31,6 +31,8 @@ The Explore page supports case-insensitive search across technology names, descr
 The seed catalogue is maintained in `src/data/technologies.ts`. It is local application data, not a live API response.
 
 Technology profiles use `/technologies/:slug`. Relationship fields point to other technology slugs in the same seed collection.
+
+Compare is available at `/compare`. Select two to four technologies to compare their type, category, ecosystem, description, common use cases, related technologies, and alternatives. Selected slugs are stored in the `technologies` query parameter, for example `/compare?technologies=react,vue`.
 
 ## Available scripts
 

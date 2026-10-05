@@ -33,6 +33,9 @@ export default function TechnologyDetailPage({ technology }: TechnologyDetailPag
             ))}
           </h1>
           <p className="technology-detail-description">{technology.description}</p>
+          <a className="technology-compare-link" href={`/compare?technologies=${encodeURIComponent(technology.slug)}`}>
+            Compare with… <span aria-hidden="true">↗</span>
+          </a>
         </div>
         <aside className="technology-placement" aria-labelledby="technology-placement-title">
           <p className="eyebrow"><span className="eyebrow-line" aria-hidden="true" />Context</p>

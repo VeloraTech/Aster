@@ -1,5 +1,5 @@
 type SiteHeaderProps = {
-  currentPage: 'home' | 'explore' | 'technology'
+  currentPage: 'home' | 'explore' | 'technology' | 'compare'
 }
 
 export default function SiteHeader({ currentPage }: SiteHeaderProps) {
@@ -27,6 +27,15 @@ export default function SiteHeader({ currentPage }: SiteHeaderProps) {
           ) : (
             <a className="nav-action" href="/explore">
               Explore
+            </a>
+          )}
+          {currentPage === 'compare' ? (
+            <span className="nav-link nav-compare" aria-current="page">
+              Compare
+            </span>
+          ) : (
+            <a className="nav-link nav-compare" href="/compare">
+              Compare
             </a>
           )}
         </nav>

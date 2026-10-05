@@ -6,6 +6,7 @@ import { findTechnologyBySlug } from '../data/technologies'
 import ExplorePage from '../features/explore/ExplorePage'
 import TechnologyDetailPage from '../features/technology/TechnologyDetailPage'
 import TechnologyNotFoundPage from '../features/technology/TechnologyNotFoundPage'
+import ComparePage from '../features/compare/ComparePage'
 import HomePage from '../pages/HomePage'
 
 import './app.css'
@@ -17,6 +18,8 @@ export default function App() {
   const selectedTechnology = technologySlug ? findTechnologyBySlug(technologySlug) : undefined
   const currentPage = path === '/explore'
     ? 'explore'
+    : path === '/compare'
+      ? 'compare'
     : technologyMatch
       ? 'technology'
       : 'home'
@@ -33,6 +36,8 @@ export default function App() {
           selectedTechnology ? <TechnologyDetailPage technology={selectedTechnology} /> : <TechnologyNotFoundPage />
         ) : path === '/explore' ? (
           <ExplorePage />
+        ) : path === '/compare' ? (
+          <ComparePage />
         ) : (
           <HomePage />
         )}
