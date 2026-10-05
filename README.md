@@ -4,49 +4,70 @@ Aster is a technology intelligence and discovery platform that helps developers 
 
 ## Project status
 
-Phase 4: Explore, technology profiles, and a structured Compare experience use one curated local seed collection. Comparison is descriptive and shareable by URL; it does not rank technologies. Data remains local, with no REST API or backend.
+The application includes Explore, technology profiles, Compare, and Ecosystem experiences. These experiences now read catalogue data from an Express REST API backed by PostgreSQL. Supabase provides the managed PostgreSQL database; this repository does not install or run a local PostgreSQL server.
 
-## Technology
+## Stack
 
-- React
-- TypeScript
-- Vite
-- ESLint
+- React, TypeScript, and Vite client
+- Express and TypeScript REST API
+- Supabase hosted PostgreSQL, accessed by the API with `pg`
 
-## Getting started
+## Requirements
 
-Install a current Node.js release and npm, then run:
+- Node.js 22 or newer and npm
+- A Supabase project with a PostgreSQL connection string
+
+## Setup
+
+Install dependencies and create a local environment file:
 
 ```sh
 npm install
+cp .env.example .env
+```
+
+In Supabase Dashboard, open **Connect** and copy a PostgreSQL connection string into `DATABASE_URL` in `.env`. Use a connection method appropriate for your deployment (for local development, Supabase's session pooler is suitable when direct IPv6 connectivity is unavailable). Keep `.env` private and URL-encode any reserved characters in the password. The example enables SSL with `sslmode=require`.
+
+Apply the schema and load the curated catalogue:
+
+```sh
+npm run db:migrate
+npm run db:seed
+```
+
+The seed command synchronizes Aster's current curated catalogue and is intended for development setup. Do not point it at a production database with data you need to preserve.
+
+Start both the API and Vite client:
+
+```sh
 npm run dev
 ```
 
-Vite prints the local development URL in the terminal.
+The client runs at the Vite URL shown in the terminal and proxies `/api` to `http://127.0.0.1:3001`. Alternatively, use `npm run dev:api` and `npm run dev:client` separately. Configure `API_PORT`, `API_HOST`, `CLIENT_ORIGINS`, or `VITE_API_PROXY_TARGET` in `.env` when needed.
 
-## Explore
+## API
 
-The Explore page supports case-insensitive search across technology names, descriptions, types, categories, and ecosystems. Category filters, name sorting, and client-side pagination work together. Search, category, sort, and page state are local to the page and are not stored in the URL. Changing a search, category, or sort resets the results to the first page.
+The versioned API is served under `/api/v1`:
 
-The seed catalogue is maintained in `src/data/technologies.ts`. It is local application data, not a live API response.
-
-Technology profiles use `/technologies/:slug`. Relationship fields point to other technology slugs in the same seed collection.
-
-Compare is available at `/compare`. Select two to four technologies to compare their type, category, ecosystem, description, common use cases, related technologies, and alternatives. Selected slugs are stored in the `technologies` query parameter, for example `/compare?technologies=react,vue`.
-
-## Available scripts
-
-| Command | Description |
+| Endpoint | Purpose |
 | --- | --- |
-| `npm run dev` | Start the development server. |
-| `npm run lint` | Check the project with ESLint. |
-| `npm run typecheck` | Run TypeScript project checks. |
-| `npm run build` | Type-check and create the production build in `dist/`. |
-| `npm run preview` | Preview the production build locally. |
+| `GET /health` | API and database health check |
+| `GET /technologies` | Search, filter, sort by name, and paginate catalogue entries |
+| `GET /technologies/:slug` | Retrieve one technology and its use cases/resources |
+| `GET /technologies/:slug/relationships` | Retrieve its typed incoming and outgoing relationships |
 
-## Environment
+List parameters are `search`, `category`, `type`, `ecosystem`, `sort=name`, `order=asc|desc`, `page`, and `limit` (maximum 100). Values are validated by the API; database queries use positional parameters.
 
-The current frontend does not require environment variables or API credentials.
+## Verification
+
+```sh
+npm run lint
+npm run typecheck
+npm test
+npm run build
+```
+
+The integration test suite uses `DATABASE_URL_TEST`, not `DATABASE_URL`. It creates a temporary schema, runs migrations and seeding there, checks relational constraints, then drops that schema. Set it to a separate Supabase test project/database before running the database integration test. Without it, that test is skipped while API and model tests still run.
 
 ## License
 

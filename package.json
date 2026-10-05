@@ -4,20 +4,31 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "node scripts/dev.mjs",
+    "dev:client": "vite --host 127.0.0.1",
+    "dev:api": "node --env-file-if-exists=.env --import tsx --watch server/src/index.ts",
+    "build": "npm run typecheck && npm run build:api && vite build",
+    "build:api": "tsc -p server/tsconfig.json",
     "lint": "eslint .",
-    "typecheck": "tsc -b --pretty",
-    "preview": "vite preview"
+    "typecheck": "tsc -b --pretty && tsc -p server/tsconfig.json --noEmit && tsc -p server/tsconfig.test.json",
+    "preview": "vite preview",
+    "start:api": "node --env-file-if-exists=.env server/dist/index.js",
+    "db:migrate": "node --env-file-if-exists=.env --import tsx server/src/db/migrate.ts",
+    "db:seed": "node --env-file-if-exists=.env --import tsx server/src/db/seed.ts",
+    "test": "tsx --test server/test/api.test.ts server/test/model.test.ts server/test/database.integration.test.ts"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
+    "express": "^5.2.1",
+    "pg": "^8.23.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/express": "^5.0.6",
     "@types/node": "^24.13.3",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
@@ -25,6 +36,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.7",
     "globals": "^17.13.0",
+    "tsx": "^4.23.15",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.71.1",
     "vite": "^8.3.0"

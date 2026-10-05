@@ -1,7 +1,7 @@
-import type { Technology } from '../../../types/technology'
+import type { TechnologySummary } from '../../../types/technology'
 
 type TechnologyCardProps = {
-  technology: Technology
+  technology: TechnologySummary
 }
 
 export default function TechnologyCard({ technology }: TechnologyCardProps) {

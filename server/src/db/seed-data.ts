@@ -1,7 +1,22 @@
-import type { Technology } from '../types/technology'
+import type { RelationshipType, TechnologyCategory, TechnologyResource, TechnologyType } from '../types/technology.js'
 
-// Curated local seed data shared by Explore and Technology Detail.
-export const technologies: Technology[] = [
+export type SeedTechnology = {
+  id: string
+  name: string
+  slug: string
+  description: string
+  type: TechnologyType
+  category: TechnologyCategory
+  ecosystem?: string
+  logo?: string
+  context?: string
+  useCases?: string[]
+  relationships?: { type: RelationshipType; targetId: string }[]
+  resources?: TechnologyResource[]
+}
+
+// Curated seed copy of Aster's existing catalogue. PostgreSQL is the runtime source of truth.
+export const seedTechnologies: SeedTechnology[] = [
   {
     id: 'angular',
     name: 'Angular',
@@ -12,8 +27,14 @@ export const technologies: Technology[] = [
     category: 'Frameworks',
     ecosystem: 'TypeScript',
     useCases: ['Large web applications', 'Enterprise application interfaces', 'Progressive web applications'],
-    relatedTechnologies: ['typescript', 'playwright', 'vite'],
-    alternatives: ['react', 'vue', 'svelte'],
+    relationships: [
+      { type: 'commonly_used_with', targetId: 'typescript' },
+      { type: 'commonly_used_with', targetId: 'playwright' },
+      { type: 'commonly_used_with', targetId: 'vite' },
+      { type: 'alternative_to', targetId: 'react' },
+      { type: 'alternative_to', targetId: 'vue' },
+      { type: 'alternative_to', targetId: 'svelte' },
+    ],
     resources: [{ label: 'Angular documentation', url: 'https://angular.dev/overview', type: 'Documentation' }],
   },
   {
@@ -26,8 +47,16 @@ export const technologies: Technology[] = [
     category: 'Frameworks',
     ecosystem: 'JavaScript',
     useCases: ['Interactive web applications', 'Reusable interface systems', 'Single-page applications', 'Component-based user interfaces'],
-    relatedTechnologies: ['typescript', 'vite', 'vitest', 'playwright'],
-    alternatives: ['vue', 'svelte', 'angular'],
+    relationships: [
+      { type: 'commonly_used_with', targetId: 'typescript' },
+      { type: 'commonly_used_with', targetId: 'vite' },
+      { type: 'commonly_used_with', targetId: 'vitest' },
+      { type: 'commonly_used_with', targetId: 'playwright' },
+      { type: 'alternative_to', targetId: 'vue' },
+      { type: 'alternative_to', targetId: 'svelte' },
+      { type: 'part_of', targetId: 'javascript' },
+      { type: 'related_to', targetId: 'react-native' },
+    ],
     resources: [{ label: 'React documentation', url: 'https://react.dev/learn', type: 'Documentation' }],
   },
   {
@@ -40,8 +69,12 @@ export const technologies: Technology[] = [
     category: 'Frameworks',
     ecosystem: 'JavaScript',
     useCases: ['Interactive web applications', 'Lightweight interfaces', 'Reusable web components'],
-    relatedTechnologies: ['javascript', 'vite', 'playwright'],
-    alternatives: ['react', 'vue', 'angular'],
+    relationships: [
+      { type: 'commonly_used_with', targetId: 'javascript' },
+      { type: 'commonly_used_with', targetId: 'vite' },
+      { type: 'commonly_used_with', targetId: 'playwright' },
+      { type: 'alternative_to', targetId: 'vue' },
+    ],
     resources: [{ label: 'Svelte documentation', url: 'https://svelte.dev/docs/svelte/overview', type: 'Documentation' }],
   },
   {
@@ -54,8 +87,12 @@ export const technologies: Technology[] = [
     category: 'Frameworks',
     ecosystem: 'JavaScript',
     useCases: ['Interactive web interfaces', 'Single-page applications', 'Incrementally enhanced websites'],
-    relatedTechnologies: ['javascript', 'typescript', 'vite', 'vitest'],
-    alternatives: ['react', 'svelte', 'angular'],
+    relationships: [
+      { type: 'commonly_used_with', targetId: 'javascript' },
+      { type: 'commonly_used_with', targetId: 'typescript' },
+      { type: 'commonly_used_with', targetId: 'vite' },
+      { type: 'commonly_used_with', targetId: 'vitest' },
+    ],
     resources: [{ label: 'Vue guide', url: 'https://vuejs.org/guide/introduction.html', type: 'Documentation' }],
   },
   {
@@ -68,7 +105,12 @@ export const technologies: Technology[] = [
     category: 'Languages',
     ecosystem: 'JavaScript',
     useCases: ['Safer application code', 'Large JavaScript codebases', 'Shared types between teams'],
-    relatedTechnologies: ['javascript', 'react', 'nodejs', 'vite'],
+    relationships: [
+      { type: 'commonly_used_with', targetId: 'javascript' },
+      { type: 'commonly_used_with', targetId: 'nodejs' },
+      { type: 'commonly_used_with', targetId: 'vite' },
+      { type: 'built_on', targetId: 'javascript' },
+    ],
     resources: [{ label: 'TypeScript documentation', url: 'https://www.typescriptlang.org/docs/', type: 'Documentation' }],
   },
   {
@@ -81,7 +123,11 @@ export const technologies: Technology[] = [
     category: 'Languages',
     ecosystem: 'Web',
     useCases: ['Interactive websites', 'Web applications', 'Server-side programs', 'Browser extensions', 'Desktop and mobile applications'],
-    relatedTechnologies: ['typescript', 'nodejs', 'react', 'vue', 'svelte', 'vite'],
+    relationships: [
+      { type: 'commonly_used_with', targetId: 'nodejs' },
+      { type: 'commonly_used_with', targetId: 'react' },
+      { type: 'commonly_used_with', targetId: 'vite' },
+    ],
     resources: [{ label: 'JavaScript guide on MDN', url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide', type: 'Documentation' }],
   },
   {
@@ -117,7 +163,11 @@ export const technologies: Technology[] = [
     category: 'Languages',
     ecosystem: 'Cloud native',
     useCases: ['Network services', 'Command-line tools', 'Cloud infrastructure software'],
-    relatedTechnologies: ['docker', 'kubernetes', 'postgresql'],
+    relationships: [
+      { type: 'commonly_used_with', targetId: 'docker' },
+      { type: 'commonly_used_with', targetId: 'kubernetes' },
+      { type: 'commonly_used_with', targetId: 'postgresql' },
+    ],
     resources: [{ label: 'Go documentation', url: 'https://go.dev/doc/', type: 'Documentation' }],
   },
   {
@@ -130,7 +180,10 @@ export const technologies: Technology[] = [
     category: 'Runtimes',
     ecosystem: 'JavaScript',
     useCases: ['Web servers and APIs', 'Command-line tools', 'Build and development tooling'],
-    relatedTechnologies: ['javascript', 'typescript', 'vite', 'postgresql'],
+    relationships: [
+      { type: 'commonly_used_with', targetId: 'vite' },
+      { type: 'commonly_used_with', targetId: 'postgresql' },
+    ],
     resources: [{ label: 'Introduction to Node.js', url: 'https://nodejs.org/learn/getting-started/introduction-to-nodejs', type: 'Documentation' }],
   },
   {
@@ -143,7 +196,10 @@ export const technologies: Technology[] = [
     category: 'Databases',
     ecosystem: 'Relational databases',
     useCases: ['Transactional applications', 'Relational data storage', 'Complex queries and reporting'],
-    relatedTechnologies: ['redis', 'docker', 'nodejs'],
+    relationships: [
+      { type: 'commonly_used_with', targetId: 'redis' },
+      { type: 'commonly_used_with', targetId: 'docker' },
+    ],
     resources: [{ label: 'PostgreSQL documentation', url: 'https://www.postgresql.org/docs/current/', type: 'Documentation' }],
   },
   {
@@ -156,7 +212,9 @@ export const technologies: Technology[] = [
     category: 'Databases',
     ecosystem: 'In-memory data',
     useCases: ['Caching', 'Queues and messaging', 'Real-time data access'],
-    relatedTechnologies: ['postgresql', 'docker'],
+    relationships: [
+      { type: 'commonly_used_with', targetId: 'docker' },
+    ],
     resources: [{ label: 'Redis documentation', url: 'https://redis.io/docs/latest/', type: 'Documentation' }],
   },
   {
@@ -169,7 +227,9 @@ export const technologies: Technology[] = [
     category: 'DevOps',
     ecosystem: 'Containers',
     useCases: ['Reproducible development environments', 'Application packaging', 'Continuous integration'],
-    relatedTechnologies: ['kubernetes', 'go', 'postgresql', 'redis'],
+    relationships: [
+      { type: 'commonly_used_with', targetId: 'kubernetes' },
+    ],
     resources: [{ label: 'Get started with Docker', url: 'https://docs.docker.com/get-started/', type: 'Documentation' }],
   },
   {
@@ -182,7 +242,9 @@ export const technologies: Technology[] = [
     category: 'Infrastructure',
     ecosystem: 'Cloud native',
     useCases: ['Container orchestration', 'Service deployment', 'Workload scaling'],
-    relatedTechnologies: ['docker', 'go'],
+    relationships: [
+
+    ],
     resources: [{ label: 'Kubernetes concepts', url: 'https://kubernetes.io/docs/concepts/', type: 'Documentation' }],
   },
   {
@@ -195,7 +257,9 @@ export const technologies: Technology[] = [
     category: 'Build Tools',
     ecosystem: 'JavaScript',
     useCases: ['Frontend development servers', 'Production asset builds', 'Framework-based web applications'],
-    relatedTechnologies: ['javascript', 'typescript', 'react', 'vue', 'svelte', 'vitest'],
+    relationships: [
+      { type: 'commonly_used_with', targetId: 'vitest' },
+    ],
     resources: [{ label: 'Vite guide', url: 'https://vite.dev/guide/', type: 'Documentation' }],
   },
   {
@@ -208,7 +272,11 @@ export const technologies: Technology[] = [
     category: 'Testing',
     ecosystem: 'Vite, JavaScript',
     useCases: ['Unit tests', 'Component tests', 'Code coverage'],
-    relatedTechnologies: ['vite', 'typescript', 'playwright'],
+    relationships: [
+      { type: 'commonly_used_with', targetId: 'typescript' },
+      { type: 'commonly_used_with', targetId: 'playwright' },
+      { type: 'built_on', targetId: 'vite' },
+    ],
     resources: [{ label: 'Vitest guide', url: 'https://vitest.dev/guide/', type: 'Documentation' }],
   },
   {
@@ -221,8 +289,25 @@ export const technologies: Technology[] = [
     category: 'Testing',
     ecosystem: 'Browser automation',
     useCases: ['End-to-end browser tests', 'Cross-browser testing', 'Automated browser workflows'],
-    relatedTechnologies: ['react', 'angular', 'vitest', 'vite'],
+    relationships: [
+      { type: 'commonly_used_with', targetId: 'vite' },
+    ],
     resources: [{ label: 'Playwright documentation', url: 'https://playwright.dev/docs/intro', type: 'Documentation' }],
+  },
+  {
+    id: 'react-native',
+    name: 'React Native',
+    slug: 'react-native',
+    description: 'A framework for building native mobile applications with React and JavaScript.',
+    context: 'React Native uses React concepts to build native interfaces for mobile platforms.',
+    type: 'Framework',
+    category: 'Frameworks',
+    ecosystem: 'JavaScript',
+    useCases: ['Cross-platform mobile applications', 'Native mobile interfaces'],
+    relationships: [
+      { type: 'commonly_used_with', targetId: 'typescript' },
+    ],
+    resources: [{ label: 'React Native documentation', url: 'https://reactnative.dev/docs/getting-started', type: 'Documentation' }],
   },
   {
     id: 'microsoft-extensions-dependency-injection',
@@ -235,19 +320,3 @@ export const technologies: Technology[] = [
     ecosystem: '.NET',
   },
 ]
-
-export function findTechnologyBySlug(slug: string) {
-  return technologies.find((technology) => technology.slug === slug)
-}
-
-export function resolveTechnologyReferences(slugs: string[] | undefined, currentSlug: string) {
-  if (!slugs) return []
-
-  const seen = new Set<string>([currentSlug])
-  return slugs.flatMap((slug) => {
-    if (seen.has(slug)) return []
-    seen.add(slug)
-    const technology = findTechnologyBySlug(slug)
-    return technology ? [technology] : []
-  })
-}

@@ -1,16 +1,15 @@
 import type { Technology } from '../../types/technology'
+import type { ResolvedTechnologyRelationship } from '../../types/technology'
 import TechnologyRelationSection from './components/TechnologyRelationSection'
 import TechnologyResources from './components/TechnologyResources'
-import { resolveTechnologyReferences } from '../../data/technologies'
 
 type TechnologyDetailPageProps = {
   technology: Technology
+  relationships: ResolvedTechnologyRelationship[]
+  relationshipError?: boolean
 }
 
-export default function TechnologyDetailPage({ technology }: TechnologyDetailPageProps) {
-  const related = resolveTechnologyReferences(technology.relatedTechnologies, technology.slug)
-  const alternatives = resolveTechnologyReferences(technology.alternatives, technology.slug)
-
+export default function TechnologyDetailPage({ technology, relationships, relationshipError = false }: TechnologyDetailPageProps) {
   return (
     <article className="technology-detail" aria-labelledby="technology-detail-title">
       <nav className="detail-breadcrumb" aria-label="Breadcrumb">
@@ -35,6 +34,9 @@ export default function TechnologyDetailPage({ technology }: TechnologyDetailPag
           <p className="technology-detail-description">{technology.description}</p>
           <a className="technology-compare-link" href={`/compare?technologies=${encodeURIComponent(technology.slug)}`}>
             Compare with… <span aria-hidden="true">↗</span>
+          </a>
+          <a className="technology-ecosystem-link" href={`/ecosystem?technology=${encodeURIComponent(technology.slug)}`}>
+            Explore relationships <span aria-hidden="true">→</span>
           </a>
         </div>
         <aside className="technology-placement" aria-labelledby="technology-placement-title">
@@ -84,18 +86,9 @@ export default function TechnologyDetailPage({ technology }: TechnologyDetailPag
         <div className="detail-secondary-column">
           <TechnologyRelationSection
             id="related-technologies-title"
-            title="Related technologies"
-            technologies={related}
-            emptyMessage="No related technologies are connected to this entry yet."
+            relationships={relationships}
+            errorMessage={relationshipError ? 'Unable to load ecosystem relationships. Please try again.' : undefined}
           />
-          {technology.alternatives !== undefined && (
-            <TechnologyRelationSection
-              id="technology-alternatives-title"
-              title="Alternatives"
-              technologies={alternatives}
-              emptyMessage="No alternatives are listed for this technology yet."
-            />
-          )}
           <TechnologyResources resources={technology.resources ?? []} />
         </div>
       </div>

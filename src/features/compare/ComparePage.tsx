@@ -6,7 +6,14 @@ export default function ComparePage() {
   const {
     selection,
     selectedTechnologies,
+    relationshipsByTechnology,
+    failedSlugs,
+    loadingSelected,
     availableTechnologies,
+    catalogueLoading,
+    catalogueError,
+    retryCatalogue,
+    retryDetails,
     addTechnology,
     removeTechnology,
     clearSelection,
@@ -32,13 +39,26 @@ export default function ComparePage() {
 
       <TechnologySelector
         technologies={availableTechnologies}
-        selected={selectedTechnologies}
+        selected={availableTechnologies.filter((technology) => selection.slugs.includes(technology.slug))}
+        selectedSlugs={selection.slugs}
+        loading={catalogueLoading}
+        error={catalogueError}
         onAdd={addTechnology}
         onRemove={removeTechnology}
         onClear={clearSelection}
+        onRetry={retryCatalogue}
       />
 
-      {selectedTechnologies.length < 2 ? (
+      {selection.slugs.length >= 2 && loadingSelected ? (
+        <p className="api-loading-state" role="status">Loading selected technologies…</p>
+      ) : failedSlugs.length > 0 ? (
+        <section className="api-error-state" role="alert">
+          <p>Unable to load all selected technologies and their relationships.</p>
+          <button className="text-button" type="button" onClick={retryDetails}>Try again</button>
+        </section>
+      ) : selection.slugs.length >= 2 && selectedTechnologies.length >= 2 ? (
+        <ComparisonTable technologies={selectedTechnologies} relationshipsByTechnology={relationshipsByTechnology} />
+      ) : selectedTechnologies.length < 2 ? (
         <section className="compare-prompt" aria-labelledby="compare-prompt-title" aria-live="polite">
           <p className="eyebrow"><span className="eyebrow-line" aria-hidden="true" />Ready when you are</p>
           <h2 id="compare-prompt-title">
@@ -50,9 +70,7 @@ export default function ComparePage() {
               : `${selectedTechnologies[0].name} is selected. Add another technology to build the comparison.`}
           </p>
         </section>
-      ) : (
-        <ComparisonTable technologies={selectedTechnologies} />
-      )}
+      ) : null}
 
       <p className="compare-url-hint">
         This comparison is encoded in its URL and can be refreshed or shared. Up to {maxComparisonTechnologies} technologies can be compared at once.

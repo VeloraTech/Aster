@@ -1,13 +1,17 @@
 import { useState } from 'react'
-import type { Technology } from '../../../types/technology'
+import type { TechnologySummary } from '../../../types/technology'
 import { maxComparisonTechnologies } from '../hooks/useComparisonSelection'
 
 type TechnologySelectorProps = {
-  technologies: Technology[]
-  selected: Technology[]
+  technologies: TechnologySummary[]
+  selected: TechnologySummary[]
+  selectedSlugs: string[]
+  loading: boolean
+  error: boolean
   onAdd: (slug: string) => void
   onRemove: (slug: string) => void
   onClear: () => void
+  onRetry: () => void
 }
 
 const initialResultCount = 8
@@ -15,16 +19,19 @@ const initialResultCount = 8
 export default function TechnologySelector({
   technologies,
   selected,
+  selectedSlugs,
+  loading,
+  error,
   onAdd,
   onRemove,
   onClear,
+  onRetry,
 }: TechnologySelectorProps) {
   const [query, setQuery] = useState('')
-  const selectedSlugs = new Set(selected.map((technology) => technology.slug))
-  const limitReached = selected.length >= maxComparisonTechnologies
+  const limitReached = selectedSlugs.length >= maxComparisonTechnologies
   const normalizedQuery = query.trim().toLocaleLowerCase()
   const matchingTechnologies = technologies
-    .filter((technology) => !selectedSlugs.has(technology.slug))
+    .filter((technology) => !selectedSlugs.includes(technology.slug))
     .filter((technology) => {
       if (!normalizedQuery) return true
       return [technology.name, technology.description, technology.type, technology.category, technology.ecosystem]
@@ -42,7 +49,7 @@ export default function TechnologySelector({
           <h2 id="compare-selector-title">Choose technologies</h2>
           <p>Select two to four technologies. You can search by name, type, or category.</p>
         </div>
-        {selected.length > 0 && (
+        {selectedSlugs.length > 0 && (
           <button className="text-button compare-clear-button" type="button" onClick={onClear}>
             Clear selection
           </button>
@@ -50,18 +57,21 @@ export default function TechnologySelector({
       </div>
 
       <ul className="comparison-selection" aria-label="Selected technologies">
-        {selected.map((technology) => (
-          <li key={technology.slug}>
-            <span>{technology.name}</span>
+        {selectedSlugs.map((slug) => {
+          const technology = selected.find((item) => item.slug === slug)
+          return (
+          <li key={slug}>
+            <span>{technology?.name ?? `Unavailable: ${slug}`}</span>
             <button
               type="button"
-              aria-label={`Remove ${technology.name} from comparison`}
-              onClick={() => onRemove(technology.slug)}
+              aria-label={`Remove ${technology?.name ?? slug} from comparison`}
+              onClick={() => onRemove(slug)}
             >
               <span aria-hidden="true">×</span>
             </button>
           </li>
-        ))}
+          )
+        })}
       </ul>
 
       <div className="compare-search-control">
@@ -70,7 +80,7 @@ export default function TechnologySelector({
           id="compare-technology-search"
           type="search"
           value={query}
-          disabled={limitReached}
+          disabled={limitReached || loading || error}
           onChange={(event) => setQuery(event.target.value)}
           aria-describedby={limitReached ? 'compare-limit-message' : 'compare-search-help'}
           placeholder="Try React, language, or database"
@@ -88,7 +98,14 @@ export default function TechnologySelector({
         )}
       </div>
 
-      {visibleTechnologies.length > 0 ? (
+      {loading ? (
+        <p className="compare-selector-empty" role="status">Loading technologies…</p>
+      ) : error ? (
+        <div className="compare-selector-empty" role="alert">
+          <p>Unable to load technologies. Please try again.</p>
+          <button className="text-button" type="button" onClick={onRetry}>Try again</button>
+        </div>
+      ) : visibleTechnologies.length > 0 ? (
         <ul className="compare-search-results" aria-label="Technology search results">
           {visibleTechnologies.map((technology) => (
             <li key={technology.slug}>

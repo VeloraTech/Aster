@@ -1,7 +1,6 @@
-import type { Technology } from '../../../types/technology'
-import { resolveTechnologyReferences } from '../../../data/technologies'
+import { relationshipDefinitions, type ResolvedTechnologyRelationship, type Technology } from '../../../types/technology'
 
-type ComparisonAttribute = 'type' | 'category' | 'ecosystem' | 'description' | 'useCases' | 'related' | 'alternatives'
+type ComparisonAttribute = 'type' | 'category' | 'ecosystem' | 'description' | 'useCases' | 'relationships'
 
 const attributes: { key: ComparisonAttribute; label: string }[] = [
   { key: 'type', label: 'Type' },
@@ -9,11 +8,10 @@ const attributes: { key: ComparisonAttribute; label: string }[] = [
   { key: 'ecosystem', label: 'Ecosystem' },
   { key: 'description', label: 'Description' },
   { key: 'useCases', label: 'Common use cases' },
-  { key: 'related', label: 'Related technologies' },
-  { key: 'alternatives', label: 'Alternatives' },
+  { key: 'relationships', label: 'Relationships' },
 ]
 
-function valueFor(technology: Technology, attribute: ComparisonAttribute) {
+function valueFor(technology: Technology, attribute: ComparisonAttribute, relationships: ResolvedTechnologyRelationship[]) {
   switch (attribute) {
     case 'type':
       return technology.type
@@ -25,16 +23,17 @@ function valueFor(technology: Technology, attribute: ComparisonAttribute) {
       return technology.description
     case 'useCases':
       return technology.useCases?.join('|') ?? ''
-    case 'related':
-      return resolveTechnologyReferences(technology.relatedTechnologies, technology.slug)
-        .map((relatedTechnology) => relatedTechnology.slug).sort().join('|')
-    case 'alternatives':
-      return resolveTechnologyReferences(technology.alternatives, technology.slug)
-        .map((alternative) => alternative.slug).sort().join('|')
+    case 'relationships':
+      return relationships
+        .map(({ type, technology: target }) => `${type}:${target.slug}`).sort().join('|')
   }
 }
 
-function ComparisonValue({ technology, attribute }: { technology: Technology; attribute: ComparisonAttribute }) {
+function ComparisonValue({ technology, attribute, relationships }: {
+  technology: Technology
+  attribute: ComparisonAttribute
+  relationships: ResolvedTechnologyRelationship[]
+}) {
   if (attribute === 'type') return <span>{technology.type}</span>
   if (attribute === 'category') return <span>{technology.category}</span>
   if (attribute === 'ecosystem') return technology.ecosystem ? <span>{technology.ecosystem}</span> : <span className="comparison-not-listed">Not listed</span>
@@ -58,13 +57,12 @@ function ComparisonValue({ technology, attribute }: { technology: Technology; at
     ) : <span className="comparison-not-listed">Not listed</span>
   }
 
-  const slugs = attribute === 'related' ? technology.relatedTechnologies : technology.alternatives
-  const relatedTechnologies = resolveTechnologyReferences(slugs, technology.slug)
-  return relatedTechnologies.length ? (
+  return relationships.length ? (
     <ul className="comparison-link-list">
-      {relatedTechnologies.map((relatedTechnology) => (
-        <li key={relatedTechnology.slug}>
+      {relationships.map(({ type, technology: relatedTechnology, direction }) => (
+        <li key={`${type}-${direction}-${relatedTechnology.slug}`}>
           <a href={`/technologies/${relatedTechnology.slug}`}>{relatedTechnology.name}</a>
+          <small>{direction === 'outgoing' ? relationshipDefinitions[type].label : relationshipDefinitions[type].inverseLabel}</small>
         </li>
       ))}
     </ul>
@@ -73,9 +71,10 @@ function ComparisonValue({ technology, attribute }: { technology: Technology; at
 
 type ComparisonTableProps = {
   technologies: Technology[]
+  relationshipsByTechnology: Record<string, ResolvedTechnologyRelationship[]>
 }
 
-export default function ComparisonTable({ technologies }: ComparisonTableProps) {
+export default function ComparisonTable({ technologies, relationshipsByTechnology }: ComparisonTableProps) {
   return (
     <section className="comparison-results" aria-labelledby="comparison-results-title">
       <div className="comparison-results-heading">
@@ -105,7 +104,11 @@ export default function ComparisonTable({ technologies }: ComparisonTableProps) 
           </thead>
           <tbody>
             {attributes.map(({ key, label }) => {
-              const values = technologies.map((technology) => valueFor(technology, key))
+              const values = technologies.map((technology) => valueFor(
+                technology,
+                key,
+                relationshipsByTechnology[technology.slug] ?? [],
+              ))
               const differs = values.some((value) => value !== values[0])
 
               return (
@@ -117,7 +120,11 @@ export default function ComparisonTable({ technologies }: ComparisonTableProps) 
                       key={technology.slug}
                     >
                       {differs && <span className="visually-hidden">Differs across the selected technologies. </span>}
-                      <ComparisonValue technology={technology} attribute={key} />
+                      <ComparisonValue
+                        technology={technology}
+                        attribute={key}
+                        relationships={relationshipsByTechnology[technology.slug] ?? []}
+                      />
                     </td>
                   ))}
                 </tr>
