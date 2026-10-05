@@ -1,4 +1,4 @@
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from '@vercel/analytics/react'
 
 import SiteFooter from '../components/SiteFooter'
 import SiteHeader from '../components/SiteHeader'
@@ -25,7 +25,7 @@ export default function App() {
 
   return (
     <div className="site-frame">
-    <Analytics></Analytics>
+      <Analytics />
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>

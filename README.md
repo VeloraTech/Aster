@@ -43,3 +43,7 @@ The seed catalogue is maintained in `src/features/explore/data/technologies.ts`.
 ## Environment
 
 The current frontend does not require environment variables or API credentials.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
