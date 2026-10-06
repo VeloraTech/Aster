@@ -3,6 +3,7 @@ import { fetchTechnologies, fetchTechnology, fetchTechnologyRelationships, ApiRe
 import type { TechnologyListResponse } from '../../lib/api/types'
 import { relationshipDefinitions, relationshipTypes, type RelationshipType, type Technology } from '../../types/technology'
 import TechnologyRelationSection from '../technology/components/TechnologyRelationSection'
+import EcosystemGraph from './EcosystemGraph'
 
 type StartingTechnologyState =
   | { slug: string; status: 'not-found' | 'error' }
@@ -15,7 +16,7 @@ type SearchState = {
 }
 
 export default function EcosystemPage() {
-  const requestedSlug = new URLSearchParams(window.location.search).get('technology') ?? ''
+  const [requestedSlug, setRequestedSlug] = useState(() => new URLSearchParams(window.location.search).get('technology') ?? '')
   const [query, setQuery] = useState('')
   const [searchState, setSearchState] = useState<SearchState>({ query: '', status: 'ready' })
   const [startingState, setStartingState] = useState<StartingTechnologyState>()
@@ -23,6 +24,12 @@ export default function EcosystemPage() {
   const [searchRetryCount, setSearchRetryCount] = useState(0)
   const [visibleTypes, setVisibleTypes] = useState<RelationshipType[]>([...relationshipTypes])
   const normalizedQuery = query.trim()
+
+  useEffect(() => {
+    const syncSelection = () => setRequestedSlug(new URLSearchParams(window.location.search).get('technology') ?? '')
+    window.addEventListener('popstate', syncSelection)
+    return () => window.removeEventListener('popstate', syncSelection)
+  }, [])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -68,6 +75,12 @@ export default function EcosystemPage() {
   const selected = startingState?.slug === requestedSlug && startingState.status === 'ready' ? startingState : undefined
   const loadingTechnology = Boolean(requestedSlug) && startingState?.slug !== requestedSlug
   const filteredRelationships = selected?.relationships.filter((relationship) => visibleTypes.includes(relationship.type)) ?? []
+
+  const selectTechnology = (slug: string) => {
+    if (slug === requestedSlug) return
+    window.history.pushState({}, '', `/ecosystem?technology=${encodeURIComponent(slug)}`)
+    setRequestedSlug(slug)
+  }
 
   const toggleType = (type: RelationshipType) => {
     setVisibleTypes((current) => current.includes(type)
@@ -140,7 +153,7 @@ export default function EcosystemPage() {
         <div className="ecosystem-exploration">
           <section className="ecosystem-focus" aria-labelledby="ecosystem-focus-title">
             <div>
-              <p className="eyebrow"><span className="eyebrow-line" aria-hidden="true" />Starting technology</p>
+              <p className="eyebrow"><span className="eyebrow-line" aria-hidden="true" />Current focus</p>
               <h2 id="ecosystem-focus-title">{selected.technology.name}</h2>
               <p>{selected.technology.description}</p>
               <a className="technology-ecosystem-link" href={`/technologies/${selected.technology.slug}`}>
@@ -160,18 +173,29 @@ export default function EcosystemPage() {
             ))}
           </fieldset>
 
+          <EcosystemGraph
+            focusedTechnology={selected.technology}
+            relationships={selected.relationshipError ? [] : filteredRelationships}
+            onSelectTechnology={selectTechnology}
+            error={selected.relationshipError}
+            emptyMessage={selected.relationships.length > 0
+              ? 'No relationships match the selected categories. Choose another relationship type above.'
+              : undefined}
+          />
+
           {selected.relationshipError ? (
             <TechnologyRelationSection
               id="ecosystem-relationships-title"
               relationships={[]}
               errorMessage="Unable to load relationships. Please try again."
             />
-          ) : selected.relationships.length > 0 && filteredRelationships.length === 0 ? (
-            <p className="detail-empty-state ecosystem-filter-empty">No relationships match the selected categories. Choose another relationship type above.</p>
           ) : (
             <TechnologyRelationSection
               id="ecosystem-relationships-title"
               relationships={filteredRelationships}
+              emptyMessage={selected.relationships.length > 0
+                ? 'No relationships match the selected categories. Choose another relationship type above.'
+                : undefined}
             />
           )}
         </div>

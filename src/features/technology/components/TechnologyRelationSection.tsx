@@ -4,6 +4,7 @@ type TechnologyRelationSectionProps = {
   id: string
   relationships: ResolvedTechnologyRelationship[]
   errorMessage?: string
+  emptyMessage?: string
   visibleTypes?: RelationshipType[]
 }
 
@@ -11,6 +12,7 @@ export default function TechnologyRelationSection({
   id,
   relationships,
   errorMessage,
+  emptyMessage,
   visibleTypes,
 }: TechnologyRelationSectionProps) {
   const types = visibleTypes ?? relationshipTypes
@@ -57,7 +59,7 @@ export default function TechnologyRelationSection({
         </div>
       ) : (
         <p className="detail-empty-state" role={errorMessage ? 'status' : undefined}>
-          {errorMessage ?? 'No ecosystem relationships yet. This technology does not currently have relationship data in Aster.'}
+          {errorMessage ?? emptyMessage ?? 'No ecosystem relationships yet. This technology does not currently have relationship data in Aster.'}
         </p>
       )}
     </section>

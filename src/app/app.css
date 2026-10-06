@@ -1750,6 +1750,180 @@
   padding-top: 36px;
 }
 
+.ecosystem-relationship-map {
+  padding: 30px 0 10px;
+}
+
+.ecosystem-map-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 18px;
+}
+
+.ecosystem-map-heading h2 {
+  margin: 10px 0 0;
+  color: var(--color-ink);
+  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+  font-weight: 580;
+  letter-spacing: -0.045em;
+}
+
+.ecosystem-map-heading > p {
+  max-width: 320px;
+  margin: 0 0 2px;
+  color: var(--color-muted);
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+.ecosystem-map-scroll {
+  overflow: auto;
+  border: 1px solid var(--color-line);
+  background: #f7f8f5;
+  scrollbar-color: #9aa79e #edf0eb;
+}
+
+.ecosystem-map-scroll:focus-visible {
+  outline: 3px solid #527d6d;
+  outline-offset: 3px;
+}
+
+.ecosystem-graph-canvas {
+  position: relative;
+  width: 100%;
+  min-width: 900px;
+  overflow: hidden;
+}
+
+.ecosystem-graph-edges {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.ecosystem-graph-edge {
+  fill: none;
+  stroke: #97a39a;
+  stroke-width: 1.6;
+  vector-effect: non-scaling-stroke;
+}
+
+.ecosystem-graph-edge.is-directional {
+  stroke: #587564;
+}
+
+.ecosystem-graph-edges marker path {
+  fill: #587564;
+}
+
+.ecosystem-graph-edge-label-bg {
+  fill: #f7f8f5;
+  stroke: #d9dfd8;
+  stroke-width: 1;
+}
+
+.ecosystem-graph-edge-label {
+  fill: #43574b;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 560;
+}
+
+.ecosystem-graph-node {
+  position: absolute;
+  z-index: 1;
+  width: 190px;
+  transform: translate(-50%, -50%);
+}
+
+.ecosystem-graph-node.is-focused {
+  z-index: 2;
+  width: 218px;
+}
+
+.ecosystem-graph-node-body {
+  display: flex;
+  width: 100%;
+  min-height: 74px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 12px 14px;
+  border: 1px solid #cbd4cd;
+  border-radius: 5px;
+  color: var(--color-ink);
+  background: #fff;
+  text-align: left;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+button.ecosystem-graph-node-body {
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 140ms ease, background-color 140ms ease, transform 140ms ease;
+}
+
+button.ecosystem-graph-node-body:hover {
+  transform: translateY(-2px);
+  border-color: #668371;
+  background: #fbfcfa;
+}
+
+button.ecosystem-graph-node-body:focus-visible {
+  outline: 3px solid #527d6d;
+  outline-offset: 3px;
+}
+
+.ecosystem-graph-node.is-focused .ecosystem-graph-node-body {
+  min-height: 88px;
+  border-color: #405c4d;
+  color: #fff;
+  background: #274237;
+  text-align: center;
+}
+
+.ecosystem-graph-node-name {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.86rem;
+  font-weight: 650;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.ecosystem-graph-node-meta {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--color-muted);
+  font-size: 0.68rem;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.ecosystem-graph-node.is-focused .ecosystem-graph-node-meta {
+  color: #dce7df;
+}
+
+.ecosystem-map-empty {
+  margin: 0;
+  padding: 24px;
+  border: 1px solid var(--color-line);
+  color: var(--color-muted);
+  background: #f7f8f5;
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
 .ecosystem-focus {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(160px, 0.35fr);
@@ -1918,6 +2092,16 @@
 
   .ecosystem-focus-meta {
     text-align: left;
+  }
+
+  .ecosystem-map-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ecosystem-map-heading > p {
+    max-width: 100%;
   }
 
   .relationship-groups {

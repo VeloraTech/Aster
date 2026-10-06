@@ -15,7 +15,7 @@
     "start:api": "node --env-file-if-exists=.env server/dist/index.js",
     "db:migrate": "node --env-file-if-exists=.env --import tsx server/src/db/migrate.ts",
     "db:seed": "node --env-file-if-exists=.env --import tsx server/src/db/seed.ts",
-    "test": "tsx --test server/test/api.test.ts server/test/model.test.ts server/test/database.integration.test.ts"
+    "test": "tsx --test server/test/api.test.ts server/test/model.test.ts server/test/database.integration.test.ts server/test/ecosystem-graph.test.ts"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
