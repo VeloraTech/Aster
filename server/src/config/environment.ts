@@ -7,7 +7,7 @@ export function getDatabaseUrl() {
 }
 
 export function getApiPort() {
-  const value = process.env.API_PORT ?? '3001'
+  const value = process.env.PORT ?? process.env.API_PORT ?? '3001'
   const port = Number(value)
   if (!Number.isInteger(port) || port < 1 || port > 65535) {
     throw new Error('API_PORT must be a valid TCP port number.')
@@ -16,7 +16,7 @@ export function getApiPort() {
 }
 
 export function getApiHost() {
-  return process.env.API_HOST?.trim() || '127.0.0.1'
+  return process.env.API_HOST?.trim() || '0.0.0.0'
 }
 
 export function getAllowedOrigins() {
