@@ -10,6 +10,8 @@ dist-ssr/
 .env
 .env.*
 !.env.example
+!.env.render.example
+!.env.vercel.example
 
 # Logs
 logs/
